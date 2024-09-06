@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jack's Search</title>
+    <style>
+        body {
+            background-color: #f0f8ff; /* Light blue background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full height to center vertically */
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 10px;
+            width: 300px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .history {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .history a {
+            display: block;
+            color: #007bff;
+            text-decoration: none;
+            margin: 5px 0;
+        }
+        .history a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        // Load the history from localStorage and display it
+        window.onload = function() {
+            displayHistory();
+        };
+
+        function searchOrNavigate() {
+            let input = document.getElementById("searchInput").value.trim();
+
+            if (input === "") {
+                alert("Please enter something!");
+            } else if (input.startsWith("http://") || input.startsWith("https://")) {
+                addToHistory(input); // Add to history
+                window.location.href = input;
+            } else if (input.startsWith("www.")) {
+                let url = "http://" + input;
+                addToHistory(url); // Add to history
+                window.location.href = url;
+            } else {
+                alert("Please enter a valid link, not a name!");
+            }
+        }
+
+        // Add the URL to history and save to localStorage
+        function addToHistory(url) {
+            let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+            if (!history.includes(url)) {
+                history.push(url);
+                localStorage.setItem("searchHistory", JSON.stringify(history));
+            }
+            displayHistory(); // Refresh the displayed history
+        }
+
+        // Display the search history
+        function displayHistory() {
+            let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+            let historyDiv = document.getElementById("history");
+            historyDiv.innerHTML = ""; // Clear the current history display
+            if (history.length > 0) {
+                history.forEach(function(url) {
+                    let link = document.createElement("a");
+                    link.href = url;
+                    link.textContent = url;
+                    historyDiv.appendChild(link);
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Jack's Search</h1>
+        <input type="text" id="searchInput" placeholder="Enter URL" />
+        <br />
+        <button onclick="searchOrNavigate()">Go</button>
+
+        <div class="history" id="history">
+            <h2>Search History</h2>
+        </div>
+    </div>
+</body>
+</html>
